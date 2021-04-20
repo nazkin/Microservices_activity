@@ -26,7 +26,7 @@ app.post('/posts/:id/comments', async (req,res) => {
         const postId = req.params.id;
         const commentId = randomBytes(4).toString('hex');       //Generate random comment id
 
-        const commentBody = req.body.comment;               //Comment content from front-end
+        const commentBody = req.body.comment;                   //Comment content from front-end
 
         const comment = {                                       //creating a comment object
             id: commentId,
