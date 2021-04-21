@@ -4,6 +4,7 @@ const { randomBytes } = require('crypto');
 const port = process.env.PORT || 4001;
 const cors = require('cors');
 const axios = require('axios');
+const { eventBus } = require('../util/services');
 
 app.use(cors());
 app.use(express.json());                                //Parsing JSON bodies
@@ -11,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));        //Parsing URL-encoded bo
 
 
 const commentsPerPost = {}
+
 app.get('/posts/:id/comments', (req,res) => {
 
     const postId = req.params.id;
@@ -30,18 +32,20 @@ app.post('/posts/:id/comments', async (req,res) => {
 
         const comment = {                                       //creating a comment object
             id: commentId,
-            comment: commentBody
+            comment: commentBody,
+            status: 'pending'
         }
         const postsComments = commentsPerPost[postId] || [];    //Fetch comments for specific postid, if undefined retrieve []
         postsComments.push(comment);                            //Add comment to comments array
         commentsPerPost[postId] = postsComments;                //Save comments array to the object
 
-        await axios.post('http://localhost:4005/events', {
+        await axios.post(`${eventBus}/events`, {
             type: "commentCreate",
             data: {
                 id: commentId,
                 comment: commentBody,
-                postId: postId
+                postId: postId,
+                status: 'pending'
             }
         });
 
@@ -52,8 +56,24 @@ app.post('/posts/:id/comments', async (req,res) => {
 
 });
 
-app.post('/events', (req, res) => {
-    console.log(`Event ${req.body.type} received`);
+app.post('/events', async (req, res) => {
+   const {type, data} = req.body;
+   if(type === 'commentModerated') {
+       const { id, postId, status, comment} = data;
+       const commentsArr = commentsPerPost[postId];
+       const moderatedComment = commentsArr.find(comment => comment.id === id);
+       moderatedComment.status = status;
+
+       await axios.post(`${eventBus}/events`, {
+           type: 'commentUpdated',
+           data: {
+               id,
+               comment,
+               postId,
+               status
+           }
+       });
+   }
 
     res.json({
         status: 'Event received'

@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 4005;
 const axios = require('axios');
+const { postsService, commentsService,queryService, moderationService } = require('../util/services')
 
 
 app.use(express.json());                                //Parsing JSON bodies
@@ -10,9 +11,10 @@ app.use(express.urlencoded({ extended: true }));        //Parsing URL-encoded bo
 app.post('/events', (req,res) => {
     const receivedEvent = req.body;
 
-    axios.post('http://localhost:4000/events', receivedEvent);
-    axios.post('http://localhost:4001/events', receivedEvent);
-    axios.post('http://localhost:4002/events', receivedEvent);
+    axios.post(`${postsService}/events`, receivedEvent);
+    axios.post(`${commentsService}/events`, receivedEvent);
+    axios.post(`${queryService}/events`, receivedEvent);
+    axios.post(`${moderationService}/events`, receivedEvent);
 
     res.json({
         status: 'OK',

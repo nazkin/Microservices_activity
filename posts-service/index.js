@@ -4,6 +4,7 @@ const { randomBytes } = require('crypto');
 const port = process.env.PORT || 4000;
 const cors = require('cors');
 const axios = require('axios');
+const { eventBus } = require('../util/services');
 
 const posts = {};
 
@@ -28,7 +29,7 @@ app.post('/posts', async (req,res) => {
         title: title
     }
 
-    await axios.post('http://localhost:4005/events', {
+    await axios.post(`${eventBus}/events`, {
         type: 'postCreate',
         data: {
             id: id,
