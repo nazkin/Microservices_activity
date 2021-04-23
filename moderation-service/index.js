@@ -21,10 +21,9 @@ app.post('/events', async (req, res) => {
             status: moderatedStatus
         });
     }
-    console.log(moderatedStatus);
     res.json({
         status: 'OK',
-        message: 'New comments moderations status is ' + moderatedStatus
+        message: 'New comments moderations status is '
     });
 
 });

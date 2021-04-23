@@ -9,17 +9,22 @@ app.use(express.json());                                //Parsing JSON bodies
 app.use(express.urlencoded({ extended: true }));        //Parsing URL-encoded bodies
 
 app.post('/events', (req,res) => {
-    const receivedEvent = req.body;
+    try {
+        const receivedEvent = req.body;
 
-    axios.post(`${postsService}/events`, receivedEvent);
-    axios.post(`${commentsService}/events`, receivedEvent);
-    axios.post(`${queryService}/events`, receivedEvent);
-    axios.post(`${moderationService}/events`, receivedEvent);
+        axios.post(`${postsService}/events`, receivedEvent);
+        axios.post(`${commentsService}/events`, receivedEvent);
+        axios.post(`${queryService}/events`, receivedEvent);
+        axios.post(`${moderationService}/events`, receivedEvent);
 
-    res.json({
-        status: 'OK',
-        message: 'Event received and transferred'
-    })
+        res.json({
+            status: 'OK',
+            message: 'Event received and transferred'
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
 })
 
 app.listen(port, () => {

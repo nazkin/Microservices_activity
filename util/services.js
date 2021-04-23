@@ -1,5 +1,17 @@
-export const postsService = 'http://localhost:4000';
-export const commentsService = 'http://localhost:4001';
-export const queryService = 'http://localhost:4002';
-export const moderationService = 'http://localhost:4003';
-export const eventBus = 'http://localhost:4005';
+const postsService = 'http://localhost:4000';
+
+const commentsService = 'http://localhost:4001';
+
+const queryService = 'http://localhost:4002';
+
+const moderationService = 'http://localhost:4003';
+
+const eventBus = 'http://localhost:4005';
+
+module.exports = {
+    postsService,
+    commentsService,
+    queryService,
+    moderationService,
+    eventBus
+}
